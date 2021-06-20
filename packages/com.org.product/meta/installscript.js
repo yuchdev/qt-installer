@@ -5,7 +5,8 @@ let osKey;
 let installationPathKey;
 let dataExtracted = false;
 
-function Component() {
+function Component() 
+{
     // constructor
     log("Inside QT Demo Component()");
     systemConfigFilePath = installer.value("systemConfigFilePath");
@@ -25,11 +26,13 @@ function Component() {
     installer.uninstallationFinished.connect(onUninstallationCompletion);
 }
 
-Component.prototype.loaded = function () {
+Component.prototype.loaded = function () 
+{
     log("Inside QT Demo Component.prototype.loaded()");
 }
 
-Component.prototype.createOperationsForArchive = function (archive) {
+Component.prototype.createOperationsForArchive = function (archive) 
+{
     log("Inside Component.prototype.createOperationsForArchive()");
     try {
         component.createOperationsForArchive(archive);
@@ -39,7 +42,8 @@ Component.prototype.createOperationsForArchive = function (archive) {
     }
 }
 
-Component.prototype.createOperationsForPath = function (path) {
+Component.prototype.createOperationsForPath = function (path) 
+{
     log("Inside Component.prototype.createOperationsForPath()");
     try {
         component.createOperationsForPath(path);
@@ -48,12 +52,14 @@ Component.prototype.createOperationsForPath = function (path) {
     }
 }
 
-Component.prototype.dynamicInstallationDetailsPageEntered = function () {
+Component.prototype.dynamicInstallationDetailsPageEntered = function () 
+{
     log("Inside QT Demo Component.prototype.dynamicInstallationDetailsPageEntered()");
     // let pageWidget = gui.pageWidgetByObjectName("DynamicInstallationDetailsPage");
 }
 
-Component.prototype.createOperations = function () {
+Component.prototype.createOperations = function () 
+{
     log("Inside QT Demo Component.prototype.createOperations()");
     try {
         component.createOperations();
@@ -73,15 +79,18 @@ Component.prototype.createOperations = function () {
 }
 
 
-function onInstallationCompletion() {
+function onInstallationCompletion() 
+{
     log("Inside onInstallationCompletion(com.org.product)");
 }
 
-function onUninstallationCompletion() {
+function onUninstallationCompletion() 
+{
     log("Inside onUninstallationCompletion(com.org.product)");
 }
 
-function upgradeQTDemo() {
+function upgradeQTDemo() 
+{
     log("Inside upgradeQTDemo()");
     let targetDir = installer.value("TargetDir");
     let installationPath = installer.value("existingInstallationPath");
@@ -92,7 +101,8 @@ function upgradeQTDemo() {
 
 }
 
-function getConfProperty(key) {
+function getConfProperty(key) 
+{
     let line = installer.execute("grep", new Array(key, installer.value("systemConfigFilePath")))[0];
     if (line) {
         let parts = line.split("=");
@@ -103,7 +113,8 @@ function getConfProperty(key) {
     return undefined;
 }
 
-function validateOptions() {
+function validateOptions() 
+{
     if (installer.value("_installationFound") !== 'true' && (installer.value('uninstall') === 'true' || installer.value('upgrade') === 'true')) {
         if (installer.value("silent") === 'true') {
             log("No existing QT Demo installation found but option (Upgrade/Uninstall) provided in silent mode. Interrupting installation.");
@@ -120,7 +131,8 @@ function validateOptions() {
     }
 }
 
-function log(msg) {
+function log(msg) 
+{
     console.log(msg);
     installer.execute("/bin/sh", new Array("-c", "echo '" + msg + "' >> " + installer.value("logPath") + "/" + installer.value("logFile")));
 }
