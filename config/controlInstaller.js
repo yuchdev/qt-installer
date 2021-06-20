@@ -118,7 +118,8 @@ Controller.prototype.IntroductionPageCallback = function ()
     }
 }
 
-Controller.prototype.DynamicAbortInstallationPageCallback = function () {
+Controller.prototype.DynamicAbortInstallationPageCallback = function () 
+{
     log("Inside Controller.prototype.DynamicAbortInstallationPageCallback()");
 
     let page = gui.pageWidgetByObjectName("DynamicAbortInstallationPage");
