@@ -1,9 +1,9 @@
-var systemConfigFilePath;
-var versionKey;
-var releaseKey;
-var osKey;
-var installationPathKey;
-var dataExtracted = false;
+let systemConfigFilePath;
+let versionKey;
+let releaseKey;
+let osKey;
+let installationPathKey;
+let dataExtracted = false;
 
 function Component() {
     // constructor
@@ -15,7 +15,7 @@ function Component() {
     installationPathKey = installer.value("installationPathKey");
     component.loaded.connect(this, Component.prototype.loaded);
     validateOptions();
-    if (installer.value("_nonRootUser") == "true" || installer.value("_installationFound") == 'true') {
+    if (installer.value("_nonRootUser") === "true" || installer.value("_installationFound") === 'true') {
         log("Going to launch AbortInstallationPage");
         installer.addWizardPage(component, "AbortInstallationPage", QInstaller.TargetDirectory);
         log("AbortInstallationPage added");
@@ -50,7 +50,7 @@ Component.prototype.createOperationsForPath = function (path) {
 
 Component.prototype.dynamicInstallationDetailsPageEntered = function () {
     log("Inside QT Demo Component.prototype.dynamicInstallationDetailsPageEntered()");
-    // var pageWidget = gui.pageWidgetByObjectName("DynamicInstallationDetailsPage");
+    // let pageWidget = gui.pageWidgetByObjectName("DynamicInstallationDetailsPage");
 }
 
 Component.prototype.createOperations = function () {
@@ -64,7 +64,7 @@ Component.prototype.createOperations = function () {
         log("Data Extraction status : " + dataExtracted);
         component.createOperationsForArchive(component.archives[0]);
     }
-    if (installer.value("installerInUpgradationMode") == "true") {
+    if (installer.value("installerInUpgradationMode") === "true") {
         log("Inside QT Demo Component (Installer mode : Upgrade)");
         upgradeQTDemo();
     } else {
@@ -83,8 +83,8 @@ function onUninstallationCompletion() {
 
 function upgradeQTDemo() {
     log("Inside upgradeQTDemo()");
-    var targetDir = installer.value("TargetDir");
-    var installationPath = installer.value("existingInstallationPath");
+    let targetDir = installer.value("TargetDir");
+    let installationPath = installer.value("existingInstallationPath");
 
     // component.addElevatedOperation("Execute", "rm", "-Rf", installationPath + "/Module4/webapp");
     // component.addElevatedOperation("Execute", "rm", "-Rf", installationPath + "/Module4/lib/module4.war");
@@ -93,9 +93,9 @@ function upgradeQTDemo() {
 }
 
 function getConfProperty(key) {
-    var line = installer.execute("grep", new Array(key, installer.value("systemConfigFilePath")))[0];
+    let line = installer.execute("grep", new Array(key, installer.value("systemConfigFilePath")))[0];
     if (line) {
-        var parts = line.split("=");
+        let parts = line.split("=");
         if (parts.length > 1) {
             return (parts[1]).replace(/\r?\n|\r/g, "");
         }
@@ -104,13 +104,13 @@ function getConfProperty(key) {
 }
 
 function validateOptions() {
-    if (installer.value("_installationFound") != 'true' && (installer.value('uninstall') == 'true' || installer.value('upgrade') == 'true')) {
-        if (installer.value("silent") == 'true') {
+    if (installer.value("_installationFound") !== 'true' && (installer.value('uninstall') === 'true' || installer.value('upgrade') === 'true')) {
+        if (installer.value("silent") === 'true') {
             log("No existing QT Demo installation found but option (Upgrade/Uninstall) provided in silent mode. Interrupting installation.");
             gui.cancelButtonClicked();
             return false;
         } else {
-            if (QMessageBox.critical("installer-critical", "Installer", 'No existing QT Demo  installation found but Upgrade/Uninstall option provided through command line options. Interrupting installation.', QMessageBox.Ok) == QMessageBox.Ok) {
+            if (QMessageBox.critical("installer-critical", "Installer", 'No existing QT Demo  installation found but Upgrade/Uninstall option provided through command line options. Interrupting installation.', QMessageBox.Ok) === QMessageBox.Ok) {
                 gui.cancelButtonClicked();
                 return false;
             }

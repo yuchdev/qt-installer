@@ -1,54 +1,40 @@
-//Ref :: gui :: https://doc.qt.io/qtinstallerframework/scripting-gui.html#reject-method
-//Ref :: installer :: http://doc.qt.io/qtinstallerframework/scripting-installer.html
-//Ref :: component :: http://doc.qt.io/qtinstallerframework/scripting-component.html
-//Ref :: Component :: http://doc.qt.io/qtinstallerframework/qinstaller-component.html
-//Ref :: Package :: http://doc.qt.io/qtinstallerframework/ifw-component-description.html
-//Ref :: Configuration :: http://doc.qt.io/qtinstallerframework/ifw-globalconfig.html
-//Ref :: QInstaller :: http://doc.qt.io/qtinstallerframework/scripting-qinstaller.html
-//Ref :: Operations :: http://doc.qt.io/qtinstallerframework/operations.html
-//Ref :: QMessageBox :: http://doc.qt.io/qt-5/qmessagebox.html
-//Ref :: buttons :: http://doc.qt.io/qtinstallerframework/scripting-buttons.html
-//Ref :: Scripting :: https://doc.qt.io/qtinstallerframework/scripting-qmlmodule.html
-//Ref :: Controller :: http://ifw.podsvirov.pro/qtifw/doc/noninteractive.html
-//Ref :: PackageManagerPage :: http://doc.qt.io/qtinstallerframework/qinstaller-packagemanagerpage.html
-
-var systemConfigFilePath = "/qtDemoProject.conf";
-var versionKey = "prod.version";
-var osKey = "prod.plateform";
-var buildKey = "prod.build";
-var installationPathKey = "prod.path";
-var version, release, path;
-var installationFound = false;
-var prodFolder = "/QTDemoInstaller";
-var tempInstallationPath = "/tmp" + prodFolder;
-var maintenanceTool = "QTDemoInstallerMaintenanceTool";
-var requiredMinDiskSpace = 0.1; //In GB
-var availableDiskSpace = 0; //In GB
-var selectedPath;
-var uninstallationCalled = false;
-var _showInfoDialogClosed;
-var _leaveAbortInstallationPageConnected = false;
-var _onLeftAbortInstallationPageCalled = false
-var installerInUpgradationMode = false;
-var _isInterrupted = false;
-var autoClickDelay = 500;
-var logFile = "QTDemoInstallation.log";
-var rootUserRequired = false;
+let systemConfigFilePath = "/qtDemoProject.conf";
+let versionKey = "prod.version";
+let osKey = "prod.plateform";
+let buildKey = "prod.build";
+let installationPathKey = "prod.path";
+let version, release, path;
+let installationFound = false;
+let prodFolder = "/QTDemoInstaller";
+let tempInstallationPath = "/tmp" + prodFolder;
+let maintenanceTool = "QTDemoInstallerMaintenanceTool";
+let requiredMinDiskSpace = 0.1; //In GB
+let availableDiskSpace = 0; //In GB
+let selectedPath;
+let uninstallationCalled = false;
+let _showInfoDialogClosed;
+let _leaveAbortInstallationPageConnected = false;
+let _onLeftAbortInstallationPageCalled = false
+let installerInUpgradationMode = false;
+let _isInterrupted = false;
+let autoClickDelay = 500;
+let logFile = "QTDemoInstallation.log";
+let rootUserRequired = false;
 
 // Command line options for silent installation
-var isSilent = false;                       // Optional (true) default : false
-var isUpgrade = false;                      // Optional (true) default : false
-var isUninstall = false;                    // Optional (true) default : false
-var delegatedUninstall = false;             // Optional (true) default : false
-var installationPath;                       // Optional (<TargetDir>) default : /usr/local/QTDemoInstaller
-var installModule4;                         // Optional (true, false) default : true
-var installModule5;                         // Optional (true, false) default : true
-var installModule1;                         // Optional (true, false) default : true
-var module1Port;                            // Optional (<Module1Port>) default : 1234
-var module7Port;                            // Optional (<Module7Port>) default : 2345
-var module4Port;                            // Optional (<Module4Port>) default : 3456
-var module5Port;                            // Optional (<Module5Port>) default : 4567
-var logPath;                                // Optional (<LogDir>) default : <CurrentDir>
+let isSilent = false;                       // Optional (true) default : false
+let isUpgrade = false;                      // Optional (true) default : false
+let isUninstall = false;                    // Optional (true) default : false
+let delegatedUninstall = false;             // Optional (true) default : false
+let installationPath;                       // Optional (<TargetDir>) default : /usr/local/QTDemoInstaller
+let installModule4;                         // Optional (true, false) default : true
+let installModule5;                         // Optional (true, false) default : true
+let installModule1;                         // Optional (true, false) default : true
+let module1Port;                            // Optional (<Module1Port>) default : 1234
+let module7Port;                            // Optional (<Module7Port>) default : 2345
+let module4Port;                            // Optional (<Module4Port>) default : 3456
+let module5Port;                            // Optional (<Module5Port>) default : 4567
+let logPath;                                // Optional (<LogDir>) default : <CurrentDir>
 
 //ProductVersion format in config.xml => major.minor.patch|build|branch|other
 
@@ -71,7 +57,7 @@ function Controller() {
         installer.autoAcceptMessageBoxes();
         installer.setMessageBoxAutomaticAnswer("OverwriteTargetDirectory", QMessageBox.Yes);
     }
-    var widget = gui.pageById(QInstaller.Introduction);
+    let widget = gui.pageById(QInstaller.Introduction);
     if (widget != null) {
         widget.packageManagerCoreTypeChanged.connect(onChangePackageManagerCoreType);
     }
@@ -94,7 +80,7 @@ function Controller() {
     // This being connected from callback function
     // gui.pageByObjectName("DynamicAbortInstallationPage").left.connect(onLeftAbortInstallationPage);
 
-    gui.interrupted.connect(onInstallationInterrupted);
+    gui.interrupted.connect(onInstallationInterrupted)
     installer.installationStarted.connect(onInstallationStarted);
     installer.installationFinished.connect(onInstallationFinished);
     installer.installationInterrupted.connect(onInstallationInterrupted);
@@ -105,13 +91,13 @@ function Controller() {
 
 Controller.prototype.IntroductionPageCallback = function () {
     log("Inside Controller.IntroductionPageCallback()");
-    var widget = gui.currentPageWidget();
+    let widget = gui.currentPageWidget();
     if (widget != null) {
         if (installer.isInstaller()) {
             widget.title = "Setup - QT Demo Installer";
             widget.MessageLabel.setText("Welcome to the QT Demo Installer Installation Wizard.");
         } else {
-            var radioButton = widget.findChild("UpdaterRadioButton");
+            let radioButton = widget.findChild("UpdaterRadioButton");
             radioButton.setVisible(false);
             radioButton = widget.findChild("PackageManagerRadioButton");
             radioButton.setVisible(false);
@@ -131,18 +117,18 @@ Controller.prototype.IntroductionPageCallback = function () {
 Controller.prototype.DynamicAbortInstallationPageCallback = function () {
     log("Inside Controller.prototype.DynamicAbortInstallationPageCallback()");
 
-    var page = gui.pageWidgetByObjectName("DynamicAbortInstallationPage");
+    let page = gui.pageWidgetByObjectName("DynamicAbortInstallationPage");
 
     //Once any of two options (Uninstall/Upgrade) selected, do not allow to change option
     if (page.upgrade.visible && (delegatedUninstall || installerInUpgradationMode)) {
         gui.clickButton(buttons.NextButton, 5);
     }
 
-    if (installer.value("_nonRootUser") == "true") {
+    if (installer.value("_nonRootUser") === "true") {
         // page.launchTool.setVisible(false);
         page.uninstall.setVisible(false);
         page.upgrade.setVisible(false);
-        var html = "Installer must be run as root.<br/><br/>";
+        let html = "Installer must be run as root.<br/><br/>";
         html += "Aborting current QT Demo Installer installation";
         page.abortDetails.html = html;
         skipAllSteps();
@@ -158,7 +144,7 @@ Controller.prototype.DynamicAbortInstallationPageCallback = function () {
         if (fileExists(path + "/" + maintenanceTool)) {
             if (version < installer.value("ProductInstallerVersion") && release < installer.value("QTDemoInstallerBuild")) {
                 // Case 1 : If Conf file and Maintenance tool both present and lower version QT Demo installed
-                var html = "QT Demo Installer already installed.<br/><br/>";
+                let html = "QT Demo Installer already installed.<br/><br/>";
                 html += "<b>Installation Directory :</b> " + path + "<br/>";
                 html += "<b>Installer Version :</b> " + installer.value("ProductInstallerVersion") + "<br/>";
                 html += "<b>Installer Release :</b> " + installer.value("QTDemoInstallerBuild") + "<br/><br/><br/>";
@@ -171,7 +157,7 @@ Controller.prototype.DynamicAbortInstallationPageCallback = function () {
                 }
             } else {
                 // Case 3 : If Conf file and Maintenance tool both present but installed version is same or higher
-                var html = "QT Demo Installer already installed.<br/><br/>";
+                let html = "QT Demo Installer already installed.<br/><br/>";
                 html += "<b>Installation Directory :</b> " + path + "<br/>";
                 html += "<b>Installer Version :</b> " + installer.value("ProductInstallerVersion") + "<br/>";
                 html += "<b>Installer Release :</b> " + installer.value("QTDemoInstallerBuild") + "<br/><br/><br/>";
@@ -182,7 +168,7 @@ Controller.prototype.DynamicAbortInstallationPageCallback = function () {
             }
         } else {
             // Case 2 : If Conf file present but Maintenance tool is not there
-            var html = "QT Demo Installer already installed.<br/><br/>";
+            let html = "QT Demo Installer already installed.<br/><br/>";
             html += "<b>Installation Directory :</b> " + path + "<br/>";
             html += "<b>Installed Version :</b> " + version + "<br/>";
             html += "<b>Installed Release :</b> " + release + "<br/><br/><br/>";
@@ -196,17 +182,19 @@ Controller.prototype.DynamicAbortInstallationPageCallback = function () {
         // page.launchTool.setVisible(false);
         page.uninstall.setVisible(false);
         page.upgrade.setVisible(false);
-        var html = "Installation aborted due to unknown reason";
-        page.abortDetails.html = html;
+        page.abortDetails.html = "Installation aborted due to unknown reason";
         skipAllSteps();
     }
     if (!page.upgrade.visible && isUpgrade) {
-        if (installer.value("silent") == 'true') {
+        if (installer.value("silent") === 'true') {
             log("Upgrade option provided through command line options in silent mode. But Upgarde operation not supported. Interrupting installation.");
             gui.cancelButtonClicked();
             return false;
         } else {
-            if (QMessageBox.critical("installer-critical", "Installer", 'Upgrade option provided through command line options. But Upgarde operation not supported. Interrupting installation.', QMessageBox.Ok) == QMessageBox.Ok) {
+            if (QMessageBox.critical("installer-critical",
+                "Installer",
+                'Upgrade option provided through command line options. But Upgarde operation not supported. Interrupting installation.',
+                QMessageBox.Ok) === QMessageBox.Ok) {
                 gui.cancelButtonClicked();
                 return false;
             }
@@ -232,8 +220,8 @@ function onLeftAbortInstallationPage() {
         return;
     }
 
-    var widget = gui.pageWidgetByObjectName("DynamicAbortInstallationPage");
-    if (installer.value("_nonRootUser") == 'true') {
+    let widget = gui.pageWidgetByObjectName("DynamicAbortInstallationPage");
+    if (installer.value("_nonRootUser") === 'true') {
         return;
     }
     if (widget != null) {
@@ -253,18 +241,18 @@ function onLeftAbortInstallationPage() {
             installer.setValue("installerInUpgradationMode", "true");
             installer.setValue("TargetDir", tempInstallationPath);
 
-            var components = installer.components();
+            let components = installer.components();
             for (i = 0; i < components.length; ++i) {
-                var installationRequested = getConfProperty(components[i].name);
+                let installationRequested = getConfProperty(components[i].name);
                 installer.setValue("installationRequested_" + components[i].name, installationRequested ? installationRequested : "false");
             }
 
             if (installerInUpgradationMode) {
-                var result = installer.executeDetached("/bin/sh", new Array("-c", "rm -Rf " + tempInstallationPath + "/" + maintenanceTool));
-                result = installer.executeDetached("/bin/sh", new Array("-c", "rm -Rf " + tempInstallationPath + "/" + maintenanceTool + ".ini"));
-                result = installer.executeDetached("/bin/sh", new Array("-c", "rm -Rf " + tempInstallationPath + "/" + maintenanceTool + ".dat"));
-                result = installer.executeDetached("/bin/sh", new Array("-c", "rm -Rf /tmp/" + maintenanceTool + "*.lock"));
-                result = installer.executeDetached("/bin/sh", new Array("-c", "rm -Rf " + tempInstallationPath));
+                let result = installer.executeDetached("/bin/sh", ["-c", "rm -Rf " + tempInstallationPath + "/" + maintenanceTool]);
+                result = installer.executeDetached("/bin/sh", ["-c", "rm -Rf " + tempInstallationPath + "/" + maintenanceTool + ".ini"]);
+                result = installer.executeDetached("/bin/sh", ["-c", "rm -Rf " + tempInstallationPath + "/" + maintenanceTool + ".dat"]);
+                result = installer.executeDetached("/bin/sh", ["-c", "rm -Rf /tmp/" + maintenanceTool + "*.lock"]);
+                result = installer.executeDetached("/bin/sh", ["-c", "rm -Rf " + tempInstallationPath]);
             }
             // enableUpgaradtionSteps();
         }
@@ -276,7 +264,7 @@ Controller.prototype.TargetDirectoryPageCallback = function () {
     if (installationPath) {
         installer.setValue("TargetDir", installationPath)
     }
-    var widget = gui.currentPageWidget();
+    let widget = gui.currentPageWidget();
     if (widget != null) {
         if (installer.value("insufficientDiskSpace") === "true") {
             widget.WarningLabel.setText("Only " + availableDiskSpace + " GB space is available in this directory. Installation directory should have a minimum of " + requiredMinDiskSpace + " GB space available.\n\nPlease specify a valid installation directory.");
@@ -296,7 +284,7 @@ function onLeftTargetDirectoryPage() {
     if (_isInterrupted) {
         return;
     }
-    var widget = gui.pageById(QInstaller.TargetDirectory);
+    let widget = gui.pageById(QInstaller.TargetDirectory);
     if (widget != null) {
         selectedPath = installer.value("TargetDir");
         if (selectedPath.endsWith(prodFolder)) {
@@ -338,48 +326,48 @@ function onLeftTargetDirectoryPage() {
 
 Controller.prototype.ComponentSelectionPageCallback = function () {
     log("Inside Controller.prototype.ComponentSelectionPageCallback()");
-    var components = installer.components();
-    var rootComp = null;
+    let components = installer.components();
+    let rootComp = null;
     for (i = 0; i < components.length; ++i) {
-        if (components[i].installationRequested() && components[i].name == 'com.org.product.module1') {
+        if (components[i].installationRequested() && components[i].name === 'com.org.product.module1') {
             if (installer.removeWizardPage(components[i], "Module1ConfigurationPage")) {
                 log("WizardPage Module1ConfigurationPage removed.");
             }
-        } else if (components[i].installationRequested() && components[i].name == 'com.org.product.module7') {
+        } else if (components[i].installationRequested() && components[i].name === 'com.org.product.module7') {
             if (installer.removeWizardPage(components[i], "Module7ConfigurationPage")) {
                 log("WizardPage Module7ConfigurationPage removed.");
             }
-        } else if (components[i].installationRequested() && components[i].name == 'com.org.product.module4') {
+        } else if (components[i].installationRequested() && components[i].name === 'com.org.product.module4') {
             if (installer.removeWizardPage(components[i], "Module4ConfigurationPage")) {
                 log("WizardPage Module4ConfigurationPage removed.");
             }
-        } else if (components[i].installationRequested() && components[i].name == 'com.org.product.module5') {
+        } else if (components[i].installationRequested() && components[i].name === 'com.org.product.module5') {
             if (installer.removeWizardPage(components[i], "Module5ConfigurationPage")) {
                 log("WizardPage Module5ConfigurationPage removed.");
             }
-        } else if (components[i].name == 'com.org.product') {
+        } else if (components[i].name === 'com.org.product') {
             if (installer.removeWizardPage(components[i], "InstallationDetailsPage")) {
                 log("WizardPage InstallationDetailsPage removed.");
             }
         }
     }
-    var widget = gui.currentPageWidget();
-    if (installModule1 && installModule1 == 'true') {
+    let widget = gui.currentPageWidget();
+    if (installModule1 && installModule1 === 'true') {
         widget.selectComponent('com.org.product.module1');
     }
-    if (installModule1 && installModule1 == 'false') {
+    if (installModule1 && installModule1 === 'false') {
         widget.deselectComponent('com.org.product.module1');
     }
-    if (installModule4 && installModule4 == 'true') {
+    if (installModule4 && installModule4 === 'true') {
         widget.selectComponent('com.org.product.module4');
     }
-    if (installModule4 && installModule4 == 'false') {
+    if (installModule4 && installModule4 === 'false') {
         widget.deselectComponent('com.org.product.module4');
     }
-    if (installModule5 && installModule5 == 'true') {
+    if (installModule5 && installModule5 === 'true') {
         widget.selectComponent('com.org.product.module5');
     }
-    if (installModule5 && installModule5 == 'false') {
+    if (installModule5 && installModule5 === 'false') {
         widget.deselectComponent('com.org.product.module5');
     }
 
@@ -393,28 +381,28 @@ function onLeftComponentSelectionPage() {
     if (_isInterrupted) {
         return;
     }
-    var components = installer.components();
-    var rootComp = null;
+    let components = installer.components();
+    let rootComp = null;
     for (i = 0; i < components.length; ++i) {
         installer.setValue("installationRequested_" + components[i].name, components[i].installationRequested() + "");
 
-        if (components[i].installationRequested() && components[i].name == 'com.org.product.module1') {
+        if (components[i].installationRequested() && components[i].name === 'com.org.product.module1') {
             if (!installer.addWizardPage(components[i], "Module1ConfigurationPage", QInstaller.ReadyForInstallation)) {
                 log("Could not load Module1ConfigurationPage. Using default port value.");
             }
-        } else if (components[i].installationRequested() && components[i].name == 'com.org.product.module7') {
+        } else if (components[i].installationRequested() && components[i].name === 'com.org.product.module7') {
             if (!installer.addWizardPage(components[i], "Module7ConfigurationPage", QInstaller.ReadyForInstallation)) {
                 log("Could not load Module7ConfigurationPage. Using default port value.");
             }
-        } else if (components[i].installationRequested() && components[i].name == 'com.org.product.module4') {
+        } else if (components[i].installationRequested() && components[i].name === 'com.org.product.module4') {
             if (!installer.addWizardPage(components[i], "Module4ConfigurationPage", QInstaller.ReadyForInstallation)) {
                 log("Could not load Module4ConfigurationPage. Using default port value.");
             }
-        } else if (components[i].installationRequested() && components[i].name == 'com.org.product.module5') {
+        } else if (components[i].installationRequested() && components[i].name === 'com.org.product.module5') {
             if (!installer.addWizardPage(components[i], "Module5ConfigurationPage", QInstaller.ReadyForInstallation)) {
                 log("Could not load Module5ConfigurationPage. Using default port value.");
             }
-        } else if (components[i].name == 'com.org.product') {
+        } else if (components[i].name === 'com.org.product') {
             installer.addWizardPage(components[i], "InstallationDetailsPage", QInstaller.ReadyForInstallation);
         }
     }
@@ -431,7 +419,7 @@ Controller.prototype.LicenseAgreementPageCallback = function () {
 
 Controller.prototype.DynamicModule7ConfigurationPageCallback = function () {
     log("Inside Controller.prototype.DynamicModule7ConfigurationPageCallback()");
-    var component = gui.pageWidgetByObjectName("DynamicModule7ConfigurationPage");
+    let component = gui.pageWidgetByObjectName("DynamicModule7ConfigurationPage");
     if (module7Port) {
         component.module7Port.setText(module7Port);
     }
@@ -442,7 +430,7 @@ Controller.prototype.DynamicModule7ConfigurationPageCallback = function () {
 
 Controller.prototype.DynamicModule1ConfigurationPageCallback = function () {
     log("Inside Controller.prototype.DynamicModule1ConfigurationPageCallback()");
-    var component = gui.pageWidgetByObjectName("DynamicModule1ConfigurationPage");
+    let component = gui.pageWidgetByObjectName("DynamicModule1ConfigurationPage");
     if (module1Port) {
         component.module1Port.setText(module1Port);
     }
@@ -453,7 +441,7 @@ Controller.prototype.DynamicModule1ConfigurationPageCallback = function () {
 
 Controller.prototype.DynamicModule4ConfigurationPageCallback = function () {
     log("Inside Controller.prototype.DynamicModule4ConfigurationPageCallback()");
-    var component = gui.pageWidgetByObjectName("DynamicModule4ConfigurationPage");
+    let component = gui.pageWidgetByObjectName("DynamicModule4ConfigurationPage");
     if (module4Port) {
         component.module4Port.setText(module4Port);
     }
@@ -464,7 +452,7 @@ Controller.prototype.DynamicModule4ConfigurationPageCallback = function () {
 
 Controller.prototype.DynamicModule5ConfigurationPageCallback = function () {
     log("Inside Controller.prototype.DynamicModule5ConfigurationPageCallback()");
-    var component = gui.pageWidgetByObjectName("DynamicModule5ConfigurationPage");
+    let component = gui.pageWidgetByObjectName("DynamicModule5ConfigurationPage");
     if (module5Port) {
         component.module5Port.setText(module5Port);
     }
@@ -503,7 +491,7 @@ Controller.prototype.ReadyForInstallationPageCallback = function () {
         }
     }
     if (installerInUpgradationMode) {
-        var widget = gui.currentPageWidget();
+        let widget = gui.currentPageWidget();
         if (widget != null) {
             widget.title = "Ready to upgrade";
             widget.MessageLabel.setText("Setup is now ready to begin upgrading QT Demo Installer on your computer. Do not interrupt process, as interruption may corrupt existing installation.");
@@ -523,11 +511,11 @@ Controller.prototype.PerformInstallationPageCallback = function () {
 
 Controller.prototype.FinishedPageCallback = function () {
     log("Inside Controller.prototype.FinishedPageCallback()");
-    var widget = gui.currentPageWidget();
+    let widget = gui.currentPageWidget();
     if (widget != null) {
         widget.title = "Completing the QT Demo Installation Wizard";
-        if (installer.isInstaller() && installer.value('installationRequested_com.org.product.module5') == 'true') {
-            var html = "System reboot required for proper installation. On click of Finish, system will be rebooted automatically.<br><br>";
+        if (installer.isInstaller() && installer.value('installationRequested_com.org.product.module5') === 'true') {
+            let html = "System reboot required for proper installation. On click of Finish, system will be rebooted automatically.<br><br>";
             html += "Click Finish to exit the QT Demo Installer Wizard.";
             widget.MessageLabel.setText(html);
         }
@@ -539,7 +527,7 @@ Controller.prototype.FinishedPageCallback = function () {
 
 function onLeftFinishedPage() {
     log("onLeftFinishedPage called");
-    if (installer.isInstaller() && installer.value('installationRequested_com.org.product.module5') == 'true') {
+    if (installer.isInstaller() && installer.value('installationRequested_com.org.product.module5') === 'true') {
         // log("Going to restart system");
         // installer.executeDetached("shutdown", "-r", "+1", "System will restart in 1 minute. Please save your work.");
     }
@@ -548,7 +536,8 @@ function onLeftFinishedPage() {
 function checkOldInstallation() {
     log("Inside Controller checkOldInstallation()");
     log("Looking if an QT Demo installation already exists on this machine ....");
-    if (installationFound = fileExists(systemConfigFilePath)) {
+    installationFound = fileExists(systemConfigFilePath)
+    if (installationFound) {
         log("Configuration file : " + systemConfigFilePath + " exists");
         log("Operating System : " + (getConfProperty(osKey)));
         log("Installed Version : " + (version = getConfProperty(versionKey)));
@@ -566,18 +555,14 @@ function checkOldInstallation() {
 }
 
 function fileExists(filePath) {
-    var status = installer.execute("ls", filePath, ">> /dev/null")[1];
-    if (status == 0) {
-        return true;
-    } else {
-        return false;
-    }
+    let status = installer.execute("ls", filePath, ">> /dev/null")[1];
+    return status === 0;
 }
 
 function getConfProperty(key) {
-    var line = installer.execute("grep", new Array(key, systemConfigFilePath))[0];
+    let line = installer.execute("grep", [key, systemConfigFilePath])[0];
     if (line) {
-        var parts = line.split("=");
+        let parts = line.split("=");
         if (parts.length > 1) {
             return (parts[1]).replace(/\r?\n|\r/g, "");
         }
@@ -588,8 +573,8 @@ function getConfProperty(key) {
 function availablesSpaceInDirectory(folderPath) {
     // df -Pk /usr/local | tail -1 | awk '{print $4}'
     // echo $(df -Pk /usr/local | tail -1 | awk '{print $4}')
-    var resultArr = installer.execute("/bin/sh", new Array("-c", "df -Pk " + folderPath + " | tail -1 | awk '{print $4}'"));
-    if (resultArr && resultArr.length > 1 && resultArr[1] == 0) {
+    let resultArr = installer.execute("/bin/sh", ["-c", "df -Pk " + folderPath + " | tail -1 | awk '{print $4}'"]);
+    if (resultArr && resultArr.length > 1 && resultArr[1] === 0) {
         return resultArr[0].replace(/\r?\n|\r/g, "");
     }
     return undefined;
@@ -612,9 +597,9 @@ function enableUpgaradtionSteps() {
     installer.setDefaultPageVisible(QInstaller.ReadyForInstallation, true);
     installer.setDefaultPageVisible(QInstaller.PerformInstallation, true);
 
-    var components = installer.components();
+    let components = installer.components();
     for (i = 0; i < components.length; ++i) {
-        if (components[i].name == 'com.org.product') {
+        if (components[i].name === 'com.org.product') {
             installer.addWizardPage(components[i], "InstallationDetailsPage", QInstaller.ReadyForInstallation);
             log("WizardPage InstallationDetailsPage added.");
             break;
@@ -630,7 +615,7 @@ function enableUpgaradtionSteps() {
 
 function launchMaintenanceTool() {
     log("Launching QT Demo Maintenance Tool");
-    if (installer.executeDetached("/bin/sh", new Array("-c", "sleep 0.2 && rm -f /tmp/" + maintenanceTool + "*.lock && " + path + "/" + maintenanceTool + " delegatedUninstall=true silent=" + isSilent))) {
+    if (installer.executeDetached("/bin/sh", ["-c", "sleep 0.2 && rm -f /tmp/" + maintenanceTool + "*.lock && " + path + "/" + maintenanceTool + " delegatedUninstall=true silent=" + isSilent])) {
         log("QT Demo Maintenance Tool launched, exiting from installation wizard");
         // gui.reject();
         gui.rejectWithoutPrompt();
@@ -666,9 +651,9 @@ function onChangePackageManagerCoreType() {
 
 function killServiceByPID(serviceName) {
     //kill -SIGTERM  $(ps -ax | grep Module7Service | head -1 | awk -F' ' '{print $1}')
-    var pid = installer.execute("pidof", new Array(serviceName))[0];
+    let pid = installer.execute("pidof", new Array(serviceName))[0];
     if (pid && parseInt(pid) > 0) {
-        installer.execute("kill", new Array("-SIGTERM", pid));
+        installer.execute("kill", ["-SIGTERM", pid]);
     }
 }
 
@@ -701,53 +686,53 @@ function onInstallationInterrupted() {
 function onUninstallationStarted() {
     log("Inside onUninstallationStarted()");
 
-    if (installer.value("installerInUpgradationMode") == "true") {
+    if (installer.value("installerInUpgradationMode") === "true") {
         return;
     }
 
-    if (installer.value("uninstallationRequested_com.org.product.module6") == "true") {
+    if (installer.value("uninstallationRequested_com.org.product.module6") === "true") {
         // uninstallModule6();
     }
-    if (installer.value("uninstallationRequested_com.org.product.module1") == "true") {
+    if (installer.value("uninstallationRequested_com.org.product.module1") === "true") {
         // uninstallModule1();
     }
-    if (installer.value("uninstallationRequested_com.org.product.module3") == "true") {
+    if (installer.value("uninstallationRequested_com.org.product.module3") === "true") {
         // uninstallModule3();
     }
-    if (installer.value("uninstallationRequested_com.org.product.module7") == "true") {
+    if (installer.value("uninstallationRequested_com.org.product.module7") === "true") {
         // uninstallModule7();
     }
-    if (installer.value("uninstallationRequested_com.org.product.module4") == "true") {
+    if (installer.value("uninstallationRequested_com.org.product.module4") === "true") {
         // uninstallModule4();
     }
-    if (installer.value("uninstallationRequested_com.org.product.module5") == "true") {
+    if (installer.value("uninstallationRequested_com.org.product.module5") === "true") {
         // uninstallModule5();
     }
-    if (installer.value("uninstallationRequested_com.org.product.module2") == "true") {
+    if (installer.value("uninstallationRequested_com.org.product.module2") === "true") {
         // uninstallModule2();
     }
-    if (installer.value("uninstallationRequested_com.org.product.module") == "true") {
+    if (installer.value("uninstallationRequested_com.org.product.module") === "true") {
         // uninstallQTDemo();
     }
 }
 
 function uninstallModule6() {
     log("Inside uninstallModule6()");
-    var destDir = installer.value("TargetDir") + "/Module6";
+    let destDir = installer.value("TargetDir") + "/Module6";
     installer.execute("/bin/sh", new Array(destDir + "/scripts/stop_app.sh"));
     // killServiceByPID("Module6Service");
 }
 
 function uninstallQTDemo() {
     log("Inside uninstallQTDemo()");
-    var homeDir = installer.value("HomeDir");
-    installer.execute("rm", new Array("-f", systemConfigFilePath));
+    let homeDir = installer.value("HomeDir");
+    installer.execute("rm", ["-f", systemConfigFilePath]);
     // installer.execute("sed", new Array("-i", "/launchQTDemoOnFirstRun/d", homeDir + "/.bashrc"));
 }
 
 function uninstallModule1() {
     log("Inside uninstallModule1()");
-    var destDir = installer.value("TargetDir") + "/Module1";
+    let destDir = installer.value("TargetDir") + "/Module1";
     // installer.execute("service", new Array("Module1Service", "stop"));
     // killServiceByPID("Module1Service");
     // installer.execute("rm", new Array("-f", "/etc/init.d/Module1Service"));
@@ -756,7 +741,7 @@ function uninstallModule1() {
 
 function uninstallModule3() {
     log("Inside uninstallModule3()");
-    var destDir = installer.value("TargetDir") + "/Module3";
+    let destDir = installer.value("TargetDir") + "/Module3";
     // installer.execute("service", new Array("Module1Service2", "stop"));
     // installer.execute("service", new Array("Module1Service1", "stop"));
     // killServiceByPID("Module1Service2");
@@ -770,7 +755,7 @@ function uninstallModule3() {
 
 function uninstallModule7() {
     log("Inside uninstallModule7()");
-    var destDir = installer.value("TargetDir") + "/Module7";
+    let destDir = installer.value("TargetDir") + "/Module7";
     // installer.execute("service", new Array("Module7Service", "stop"));
     // killServiceByPID("Module7Service");
     // installer.execute("/bin/sh", new Array(destDir + "/yajsw-stable-11.11/bin/uninstallDaemon.sh"));
@@ -780,7 +765,7 @@ function uninstallModule7() {
 
 function uninstallModule4() {
     log("Inside uninstallModule4()");
-    var destDir = installer.value("TargetDir") + "/Module4";
+    let destDir = installer.value("TargetDir") + "/Module4";
     // installer.execute("service", new Array("Module4Service", "stop"));
     // killServiceByPID("Module4Service");
     // installer.execute("/bin/sh", new Array(destDir + "/service/yajsw-stable-11.11/bin/uninstallDaemon.sh"));
@@ -791,7 +776,7 @@ function uninstallModule4() {
 
 function uninstallModule5() {
     log("Inside uninstallModule5()");
-    var destDir = installer.value("TargetDir") + "/Module5";
+    let destDir = installer.value("TargetDir") + "/Module5";
     // installer.execute("service", new Array("Module5Service", "stop"));
     // killServiceByPID("Module5Service");
     // installer.execute("chkconfig", new Array("--del", "Module5Service"));
@@ -800,8 +785,8 @@ function uninstallModule5() {
 
 function uninstallModule2() {
     log("Inside uninstallModule2()");
-    var homeDir = installer.value("HomeDir");
-    var destDir = installer.value("TargetDir") + "/Module2";
+    let homeDir = installer.value("HomeDir");
+    let destDir = installer.value("TargetDir") + "/Module2";
     // installer.execute("service", new Array("Module2Service", "stop"));
     // killServiceByPID("Module2Service");
     // installer.execute("chkconfig", new Array("--del", "Module2Service"));
@@ -818,13 +803,13 @@ function installFirstRunScriptForQTDemo() {
         return;
     }
 
-    var destDir = installer.value("TargetDir") + "/Module";
-    var homeDir = installer.value("HomeDir");
+    let destDir = installer.value("TargetDir") + "/Module";
+    let homeDir = installer.value("HomeDir");
     installer.execute("chmod", new Array("+x", destDir + "/bin/launchQTDemoOnFirstRun.sh"));
 
     installer.execute("sed", new Array("-i", "/launchQTDemoOnFirstRun/d", homeDir + "/.bashrc"));
 
-    var script = [];
+    let script = [];
     script[0] = " function launchQTDemoOnFirstRun()                                  #launchQTDemoOnFirstRun";
     script[1] = " {                                                                 #launchQTDemoOnFirstRun";
     script[2] = "     if [ -e " + destDir + "/bin/launchQTDemoOnFirstRun.sh ]     #launchQTDemoOnFirstRun";
@@ -845,7 +830,7 @@ function installFirstRunScriptForQTDemo() {
 function onUninstallationFinished(isInterrupted) {
     log("Inside onUninstallationFinished()");
 
-    if (installer.value("installerInUpgradationMode") == "true") {
+    if (installer.value("installerInUpgradationMode") === "true") {
         // installer.executeDetached("service Module7Service start");
         if (isSilent) {
             gui.clickButton(buttons.NextButton, autoClickDelay);
@@ -854,28 +839,28 @@ function onUninstallationFinished(isInterrupted) {
         return;
     }
 
-    var destDir = installer.value("TargetDir");
+    let destDir = installer.value("TargetDir");
 
-    if (isInterrupted || installer.value("uninstallationRequested_com.org.product.module6") == "true") {
-        installer.execute("rm", new Array("-Rf", destDir + "/Module6"));
+    if (isInterrupted || installer.value("uninstallationRequested_com.org.product.module6") === "true") {
+        installer.execute("rm", ["-Rf", destDir + "/Module6"]);
     }
-    if (isInterrupted || installer.value("uninstallationRequested_com.org.product.module1") == "true") {
-        installer.execute("rm", new Array("-Rf", destDir + "/Module1"));
+    if (isInterrupted || installer.value("uninstallationRequested_com.org.product.module1") === "true") {
+        installer.execute("rm", ["-Rf", destDir + "/Module1"]);
     }
-    if (isInterrupted || installer.value("uninstallationRequested_com.org.product.module3") == "true") {
-        installer.execute("rm", new Array("-Rf", destDir + "/Module3"));
+    if (isInterrupted || installer.value("uninstallationRequested_com.org.product.module3") === "true") {
+        installer.execute("rm", ["-Rf", destDir + "/Module3"]);
     }
-    if (isInterrupted || installer.value("uninstallationRequested_com.org.product.module7") == "true") {
-        installer.execute("rm", new Array("-Rf", destDir + "/Module7"));
+    if (isInterrupted || installer.value("uninstallationRequested_com.org.product.module7") === "true") {
+        installer.execute("rm", ["-Rf", destDir + "/Module7"]);
     }
-    if (isInterrupted || installer.value("uninstallationRequested_com.org.product.module4") == "true") {
-        installer.execute("rm", new Array("-Rf", destDir + "/Module4"));
+    if (isInterrupted || installer.value("uninstallationRequested_com.org.product.module4") === "true") {
+        installer.execute("rm", ["-Rf", destDir + "/Module4"]);
     }
-    if (isInterrupted || installer.value("uninstallationRequested_com.org.product.module5") == "true") {
+    if (isInterrupted || installer.value("uninstallationRequested_com.org.product.module5") === "true") {
         /*
         if (installer.fileExists(destDir + "/Module5/lib/libwrap.so")) {
             installer.gainAdminRights();
-            var currentDir = installer.execute("pwd")[0].replace(/\r?\n|\r/g, "");
+            let currentDir = installer.execute("pwd")[0].replace(/\r?\n|\r/g, "");
             installer.execute("cd", new Array(destDir + "/Module5/lib"));
             installer.execute("unlink", new Array("libwrap.so"));
             installer.execute("rm", new Array("f", "libwrap.so"));
@@ -884,10 +869,10 @@ function onUninstallationFinished(isInterrupted) {
             installer.dropAdminRights();
         }
         */
-        installer.execute("rm", new Array("-Rf", destDir + "/Module5"));
+        installer.execute("rm", ["-Rf", destDir + "/Module5"]);
     }
-    if (isInterrupted || installer.value("uninstallationRequested_com.org.product.module2") == "true") {
-        installer.execute("rm", new Array("-Rf", destDir + "/Module2"));
+    if (isInterrupted || installer.value("uninstallationRequested_com.org.product.module2") === "true") {
+        installer.execute("rm", ["-Rf", destDir + "/Module2"]);
     }
     if (isSilent) {
         gui.clickButton(buttons.NextButton, autoClickDelay);
@@ -901,10 +886,10 @@ function onInstallationStarted() {
 
 function onInstallationFinished() {
     log("Inside onInstallationFinished()");
-    var targetDir = installer.value("TargetDir");
-    var installationPath = installer.value("existingInstallationPath");
+    targetDir = installer.value("TargetDir");
+    let installationPath = installer.value("existingInstallationPath");
 
-    if (installer.value("installerInUpgradationMode") == "true") {
+    if (installer.value("installerInUpgradationMode") === "true") {
         // installer.executeDetached("service Module7Service start");
         installer.execute("cp", targetDir + "InstallationLog.txt", installationPath + "InstallationLog.txt");
 
@@ -915,8 +900,8 @@ function onInstallationFinished() {
         return;
     }
 
-    var targetDir = installer.value("TargetDir");
-    if (installer.isInstaller() && installer.value("installationRequested_com.org.product.module7") == "true") {
+    let targetDir = installer.value("TargetDir");
+    if (installer.isInstaller() && installer.value("installationRequested_com.org.product.module7") === "true") {
         // log("Starting Module7");
         // log("Execute java -jar " + targetDir + "/Module7/lib/Config.jar startOSMService " + targetDir + "/Module7 ");
         // installer.executeDetached("java", new Array("-jar", targetDir + "/Module7/lib/Config.jar", "startOSMService", targetDir + "/Module7"));
@@ -934,8 +919,8 @@ function validateUser() {
     if (!rootUserRequired) {
         return;
     }
-    var userId = installer.execute("id", "-u")[0].replace(/\r?\n|\r/g, "");
-    if (userId + "" != "0") {
+    let userId = installer.execute("id", "-u")[0].replace(/\r?\n|\r/g, "");
+    if (userId + "" !== "0") {
         log("Installer must be run as root. Aborting installation");
         installer.setValue("_nonRootUser", "true");
         // log("Using flag _nonRootUser QT Demo Component will launch AbortInstallationPage");
@@ -949,16 +934,16 @@ function validateUser() {
 
 function populateInstallationDetails() {
     log("Inside Controller populateInstallationDetails()");
-    var page = gui.pageWidgetByObjectName("DynamicInstallationDetailsPage");
-    var html = "<b>Installation Directory :</b> " + installer.value("TargetDir") + "<br/><br/>";
+    let page = gui.pageWidgetByObjectName("DynamicInstallationDetailsPage");
+    let html = "<b>Installation Directory :</b> " + installer.value("TargetDir") + "<br/><br/>";
     log("Installation Directory : " + installer.value("TargetDir"));
     html = html + "<b>QT Demo Components to be installed</b><ul>";
     log("Below QT Demo Components going to be installed :- ");
-    var components = installer.components();
-    var compCounter = 1;
+    let components = installer.components();
+    let compCounter = 1;
     for (i = 0; i < components.length; ++i) {
-        if (components[i].installationRequested() && components[i].name == 'com.org.product.module1') {
-            var compPage = gui.pageWidgetByObjectName("DynamicModule1ConfigurationPage");
+        if (components[i].installationRequested() && components[i].name === 'com.org.product.module1') {
+            let compPage = gui.pageWidgetByObjectName("DynamicModule1ConfigurationPage");
             if (!compPage) {
                 installer.setValue("module1Port", "0000");
             } else if (compPage.module1Port.text) {
@@ -968,8 +953,8 @@ function populateInstallationDetails() {
             }
             log("\t " + (compCounter++) + " - " + components[i].displayName + " : on port " + installer.value("module1Port", "0000"));
             html = html + "<li>" + components[i].displayName + " on port : " + installer.value("module1Port", "0000") + "</li>";
-        } else if (components[i].installationRequested() && components[i].name == 'com.org.product.module7') {
-            var compPage = gui.pageWidgetByObjectName("DynamicModule7ConfigurationPage");
+        } else if (components[i].installationRequested() && components[i].name === 'com.org.product.module7') {
+            let compPage = gui.pageWidgetByObjectName("DynamicModule7ConfigurationPage");
             if (!compPage) {
                 installer.setValue("module7Port", "0000");
             } else if (compPage.module7Port.text) {
@@ -979,8 +964,8 @@ function populateInstallationDetails() {
             }
             log("\t " + (compCounter++) + " - " + components[i].displayName + " on port : " + installer.value("module7Port", "0000"));
             html = html + "<li>" + components[i].displayName + " on port : " + installer.value("module7Port", "0000") + "</li>";
-        } else if (components[i].installationRequested() && components[i].name == 'com.org.product.module4') {
-            var compPage = gui.pageWidgetByObjectName("DynamicModule4ConfigurationPage");
+        } else if (components[i].installationRequested() && components[i].name === 'com.org.product.module4') {
+            let compPage = gui.pageWidgetByObjectName("DynamicModule4ConfigurationPage");
             if (!compPage) {
                 installer.setValue("module4Port", "0000");
             } else if (compPage.module4Port.text) {
@@ -990,8 +975,8 @@ function populateInstallationDetails() {
             }
             log("\t " + (compCounter++) + " - " + components[i].displayName + " on port : " + installer.value("module4Port", "0000"));
             html = html + "<li>" + components[i].displayName + " on port : " + installer.value("module4Port", "0000") + "</li>";
-        } else if (components[i].installationRequested() && components[i].name == 'com.org.product.module5') {
-            var compPage = gui.pageWidgetByObjectName("DynamicModule5ConfigurationPage");
+        } else if (components[i].installationRequested() && components[i].name === 'com.org.product.module5') {
+            let compPage = gui.pageWidgetByObjectName("DynamicModule5ConfigurationPage");
             if (!compPage) {
                 installer.setValue("module5Port", "0000");
             } else if (compPage.module5Port.text) {
@@ -1012,28 +997,28 @@ function populateInstallationDetails() {
 
 function populateUpgradationDetails() {
     log("Inside Controller populateUpgradationDetails()");
-    var page = gui.pageWidgetByObjectName("DynamicInstallationDetailsPage");
+    let page = gui.pageWidgetByObjectName("DynamicInstallationDetailsPage");
     //page.setProperty("windowTitle", "QT Demo Upgradation Details");
     //page.label.setProperty("message", "QT Demo Upgradation Details");
     page.windowTitle = "QT Demo Upgradation Details";
     page.label.message = "QT Demo Upgradation Details";
-    var html = "<b>Installation Directory :</b> " + installer.value("existingInstallationPath") + "<br/><br/>";
+    let html = "<b>Installation Directory :</b> " + installer.value("existingInstallationPath") + "<br/><br/>";
     log("Installation Directory : " + installer.value("existingInstallationPath"));
     html = html + "<b>QT Demo Components to be upgraded</b><ul>";
     log("Below QT Demo Components going to be upgraded :- ");
-    var components = installer.components();
-    var compCounter = 1;
+    let components = installer.components();
+    let compCounter = 1;
     for (i = 0; i < components.length; ++i) {
-        if (components[i].installationRequested() && components[i].name == 'com.org.product.module1') {
+        if (components[i].installationRequested() && components[i].name === 'com.org.product.module1') {
             log("\t " + (compCounter++) + " - " + components[i].displayName);
             html = html + "<li>" + components[i].displayName + "</li>";
-        } else if (components[i].installationRequested() && components[i].name == 'com.org.product.module7') {
+        } else if (components[i].installationRequested() && components[i].name === 'com.org.product.module7') {
             log("\t " + (compCounter++) + " - " + components[i].displayName);
             html = html + "<li>" + components[i].displayName + "</li>";
-        } else if (components[i].installationRequested() && components[i].name == 'com.org.product.module4') {
+        } else if (components[i].installationRequested() && components[i].name === 'com.org.product.module4') {
             log("\t " + (compCounter++) + " - " + components[i].displayName);
             html = html + "<li>" + components[i].displayName + "</li>";
-        } else if (components[i].installationRequested() && components[i].name == 'com.org.product.module5') {
+        } else if (components[i].installationRequested() && components[i].name === 'com.org.product.module5') {
             log("\t " + (compCounter++) + " - " + components[i].displayName);
             html = html + "<li>" + components[i].displayName + "</li>";
         } else if (components[i].installationRequested()) {
@@ -1048,11 +1033,11 @@ function populateUpgradationDetails() {
 function populateInstallerInfo() {
     log("Inside Controller populateInstallerInfo()");
     //ProductVersion format in config.xml => major.minor.patch|build|branch|other
-    var data = installer.value("ProductVersion");
+    let data = installer.value("ProductVersion");
     if (data) {
-        var parts = data.split("\|");
+        let parts = data.split("\|");
         if (parts.length > 1) {
-            var versionParts = parts[0].split("\.");
+            let versionParts = parts[0].split("\.");
             if (versionParts.length > 2) {
                 installer.setValue("QTDemoInstallerMajorVersion", versionParts[0]);
                 installer.setValue("QTDemoInstallerMinorVersion", versionParts[1]);
@@ -1081,20 +1066,20 @@ function populateCommandLineArguments() {
     installer.setValue("logPath", logPath);
     installer.setValue("logFile", logFile);
     showCommandLineArguments();
-    if (installer.value("silent") == 'true') {
+    if (installer.value("silent") === 'true') {
         isSilent = true;
         log("Inside Controller(), Silent mode enabled through command line option <silent>");
     } else {
         log("Inside Controller(), Silent mode disabled");
     }
 
-    if (installer.value("upgrade") == 'true') {
+    if (installer.value("upgrade") === 'true') {
         isUpgrade = true;
         log("QT Demo Upgrade mode enabled through command line option <upgrade>");
-    } else if (installer.value("uninstall") == 'true') {
+    } else if (installer.value("uninstall") === 'true') {
         isUninstall = true;
         log("QT Demo Uninstall mode enabled through command line option <uninstall>");
-    } else if (installer.value("delegatedUninstall") == 'true') {
+    } else if (installer.value("delegatedUninstall") === 'true') {
         delegatedUninstall = true;
         log("QT Demo Delegated Uninstall mode enabled through command line option <delegatedUninstall>");
     }
@@ -1151,8 +1136,8 @@ function showCommandLineArguments() {
 
 function log(msg) {
     console.log(msg);
-    installer.execute("/bin/sh", new Array("-c", "echo '" + msg + "' >> " + logPath + "/" + logFile));
-    if (false && installer.isUninstaller() && _showInfoDialogClosed == QMessageBox.Ok) {
+    installer.execute("/bin/sh", ["-c", "echo '" + msg + "' >> " + logPath + "/" + logFile]);
+    if (false && installer.isUninstaller() && _showInfoDialogClosed === QMessageBox.Ok) {
         _showInfoDialogClosed = showInfoDialog(msg);
     }
 }
