@@ -7,7 +7,7 @@
     <Version>1.0</Version>
     <ReleaseDate>2018-05-30</ReleaseDate>
     <Default>script</Default>
-    <Script>installscript.qs</Script>
+    <Script>installscript.js</Script>
     <UserInterfaces>
         <UserInterface>page.ui</UserInterface>
     </UserInterfaces>

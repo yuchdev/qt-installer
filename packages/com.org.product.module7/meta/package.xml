@@ -10,5 +10,5 @@
         <UserInterface>page.ui</UserInterface>
     </UserInterfaces>
     <Virtual>true</Virtual>
-    <Script>installscript.qs</Script>
+    <Script>installscript.js</Script>
 </Package>

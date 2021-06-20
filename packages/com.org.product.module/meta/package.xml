@@ -6,6 +6,6 @@
     <Version>1.0</Version>
     <ReleaseDate>2010-09-21</ReleaseDate>
     <Virtual>true</Virtual>
-    <Script>installscript.qs</Script>
+    <Script>installscript.js</Script>
     <UserInterfaces></UserInterfaces>
 </Package>

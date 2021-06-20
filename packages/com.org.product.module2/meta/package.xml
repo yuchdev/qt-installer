@@ -7,5 +7,5 @@
     <ReleaseDate>2018-05-30</ReleaseDate>
     <UserInterfaces></UserInterfaces>
     <Virtual>true</Virtual>
-    <Script>installscript.qs</Script>
+    <Script>installscript.js</Script>
 </Package>

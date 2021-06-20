@@ -18,6 +18,6 @@
     <RepositorySettingsPageVisible>false</RepositorySettingsPageVisible>
     <CreateLocalRepository>false</CreateLocalRepository>
     <AllowSpaceInPath>false</AllowSpaceInPath>
-    <ControlScript>controlInstaller.qs</ControlScript>
+    <ControlScript>controlInstaller.js</ControlScript>
     <SupportsModify>false</SupportsModify>
 </Installer>
