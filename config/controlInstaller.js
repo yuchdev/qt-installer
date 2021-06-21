@@ -41,9 +41,9 @@ let logPath;                                // Optional (<LogDir>) default : <Cu
 function Controller() 
 {
     logPath = installer.execute("pwd")[0].replace(/\r?\n|\r/g, "");
-    systemConfigFilePath = installer.value("HomeDir") + systemConfigFilePath; 
-    log("Logging file : " + logPath + "/" + logFile);
-    log("Going to install QT Demo Installer version : " + installer.value("ProductInstallerVersion"));
+    systemConfigFilePath = "{}{}".format(installer.value("HomeDir"), systemConfigFilePath); 
+    log("Logging file : ${logPath}/${logFile}");
+    log("Going to install QT Demo Installer version: {}".format(installer.value("ProductInstallerVersion")));
     populateCommandLineArguments();
     log("Inside QT Demo Installer Controller()");
     _showInfoDialogClosed = QMessageBox.Ok;
@@ -972,7 +972,7 @@ function validateUser()
     if (userId + "" !== "0") {
         log("Installer must be run as root. Aborting installation");
         installer.setValue("_nonRootUser", "true");
-        // log("Using flag _nonRootUser QT Demo Component will launch AbortInstallationPage");
+        log("Using flag _nonRootUser QT Demo Component will launch AbortInstallationPage");
     } else {
         installer.setValue("_nonRootUser", "false");
         // installer.execute("export", "XDG_RUNTIME_DIR=/run/user/0");

@@ -12,8 +12,12 @@ function Component()
     systemConfigFilePath = installer.value("systemConfigFilePath");
     versionKey = installer.value("versionKey");
     releaseKey = installer.value("releaseKey");
+    log("versionKey=${versionKey}, releaseKey=${releaseKey}");
+
     osKey = installer.value("osKey");
     installationPathKey = installer.value("installationPathKey");
+    log(" osKey=${osKey}, installationPathKey=${installationPathKey}");
+
     component.loaded.connect(this, Component.prototype.loaded);
     validateOptions();
     if (installer.value("_nonRootUser") === "true" || installer.value("_installationFound") === 'true') {
@@ -47,7 +51,8 @@ Component.prototype.createOperationsForPath = function (path)
     log("Inside Component.prototype.createOperationsForPath()");
     try {
         component.createOperationsForPath(path);
-    } catch (e) {
+    } 
+    catch (e) {
         log(e);
     }
 }
@@ -63,9 +68,11 @@ Component.prototype.createOperations = function ()
     log("Inside QT Demo Component.prototype.createOperations()");
     try {
         component.createOperations();
-    } catch (e) {
+    } 
+    catch (e) {
         log(e);
     }
+
     if (!dataExtracted) {
         log("Data Extraction status : " + dataExtracted);
         component.createOperationsForArchive(component.archives[0]);
@@ -73,7 +80,8 @@ Component.prototype.createOperations = function ()
     if (installer.value("installerInUpgradationMode") === "true") {
         log("Inside QT Demo Component (Installer mode : Upgrade)");
         upgradeQTDemo();
-    } else {
+    } 
+    else {
         log("Inside QT Demo Component (Installer mode : Install)");
     }
 }
