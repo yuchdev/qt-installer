@@ -41,9 +41,11 @@ let logPath;                                // Optional (<LogDir>) default : <Cu
 function Controller() 
 {
     logPath = installer.execute("pwd")[0].replace(/\r?\n|\r/g, "");
-    systemConfigFilePath = "{}{}".format(installer.value("HomeDir"), systemConfigFilePath); 
+    let homeDir = installer.value("HomeDir");
+    systemConfigFilePath = "${homeDir}${systemConfigFilePath}"; 
     log("Logging file : ${logPath}/${logFile}");
-    log("Going to install QT Demo Installer version: {}".format(installer.value("ProductInstallerVersion")));
+    productInstallerVersion = installer.value("ProductInstallerVersion");
+    log("Going to install QT Demo Installer version: ${productInstallerVersion}");
     populateCommandLineArguments();
     log("Inside QT Demo Installer Controller()");
     _showInfoDialogClosed = QMessageBox.Ok;
